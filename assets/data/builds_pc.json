@@ -1,0 +1,47 @@
+[
+  {
+    "id": "build-001",
+    "nombre": "Gaming Alto Rendimiento",
+    "componentes": ["cpu-ryzen-7", "gpu-rtx-4070", "ram-32gb", "fuente-750w"],
+    "resumenEnergetico": {
+      "wattsEstimados": 520,
+      "wattsFuente": 750
+    },
+    "precioTotal": 6200000,
+    "creadoEn": "2026-08-16T19:00:00Z",
+    "estado": {
+      "tipo": "compatible",
+      "validadoEn": "2026-08-16T19:05:00Z"
+    }
+  },
+  {
+    "id": "build-002",
+    "nombre": "Build incompleto para oficina",
+    "componentes": ["cpu-i5-12400", "ram-16gb"],
+    "resumenEnergetico": {
+      "wattsEstimados": 180,
+      "wattsFuente": 0
+    },
+    "precioTotal": 1450000,
+    "creadoEn": "2026-08-16T20:00:00Z",
+    "estado": {
+      "tipo": "incompleto",
+      "faltantes": ["placa madre", "fuente", "almacenamiento"]
+    }
+  },
+  {
+    "id": "build-003",
+    "nombre": "Build con incompatibilidad",
+    "componentes": ["cpu-ryzen-5", "motherboard-intel-b660", "fuente-500w"],
+    "resumenEnergetico": {
+      "wattsEstimados": 300,
+      "wattsFuente": 500
+    },
+    "precioTotal": 2100000,
+    "creadoEn": "2026-08-16T21:00:00Z",
+    "estado": {
+      "tipo": "incompatible",
+      "conflictos": ["El socket del procesador no coincide con la placa madre"]
+    }
+  }
+]
