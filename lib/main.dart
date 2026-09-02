@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mi_primer_app/features/pc_builder/data/builds_pc_locales.dart';
 import 'package:mi_primer_app/features/pc_builder/domain/build_pc.dart';
+import 'package:mi_primer_app/presentation/widgets/build_pc_card.dart';
 
 void main() => runApp(const NexusApp());
 
@@ -10,7 +11,13 @@ class NexusApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
     title: 'NEXUS Movil',
-    theme: ThemeData(colorSchemeSeed: Colors.teal),
+    theme: ThemeData(
+      brightness: Brightness.dark,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: Colors.teal,
+        brightness: Brightness.dark,
+      ),
+    ),
     home: const PantallaBuildsPc(),
   );
 }
@@ -26,40 +33,76 @@ class _PantallaBuildsPcState extends State<PantallaBuildsPc> {
   late final Future<List<BuildPc>> _builds = BuildsPcLocales().obtenerTodos();
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('NEXUS PC Builder')),
-    body: FutureBuilder<List<BuildPc>>(
-      future: _builds,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState != ConnectionState.done) {
-          return const Center(child: CircularProgressIndicator());
-        }
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
 
-        if (snapshot.hasError) {
-          return Center(child: Text('No se pudo leer:\n${snapshot.error}'));
-        }
-
-        final builds = snapshot.data ?? const <BuildPc>[];
-        return ListView.separated(
-          itemCount: builds.length,
-          separatorBuilder: (_, _) => const Divider(height: 1),
-          itemBuilder: (context, i) {
-            final build = builds[i];
-
-            return ListTile(
-              title: Text(build.nombre),
-              subtitle: Text(
-                '${build.estado.etiqueta} · '
-                '${build.cantidadComponentes} componentes · '
-                '${build.resumenEnergetico.wattsEstimados} W',
+    return Scaffold(
+      backgroundColor: theme.colorScheme.surface,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surfaceContainerHigh,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    Text(
+                      'Buscar',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    const Spacer(),
+                    Icon(
+                      Icons.search,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ],
+                ),
               ),
-              trailing: build.sePuedeAgregarAlCarrito
-                  ? const Icon(Icons.shopping_cart_outlined)
-                  : const Icon(Icons.warning_amber_outlined),
-            );
-          },
-        );
-      },
-    ),
-  );
+              const SizedBox(height: 24),
+              Text('Builds', style: theme.textTheme.titleMedium),
+              const SizedBox(height: 16),
+              Expanded(
+                child: FutureBuilder<List<BuildPc>>(
+                  future: _builds,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState != ConnectionState.done) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Text(
+                          'No se pudo leer:\n${snapshot.error}',
+                          style: theme.textTheme.bodyMedium,
+                        ),
+                      );
+                    }
+
+                    final builds = snapshot.data ?? const <BuildPc>[];
+                    return ListView.builder(
+                      itemCount: builds.length,
+                      itemBuilder: (context, i) =>
+                          BuildPcCard(buildPc: builds[i]),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
